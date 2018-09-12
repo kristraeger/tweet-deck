@@ -15,7 +15,7 @@ spawn('twitter-proxy'); // TwitterAPI available on http://localhost:7980
 //console.log('Server running on http://localhost:8080');
 
 /*
-  Create dev server and serve tweets to front end.
+  Create dev server and serve tweets to client.
 */
 const service = require('./service.js');
 
@@ -23,40 +23,46 @@ const timelines = service.app_settings.screen_names;
 
 const http = require('http');
 
+const fs = require('fs')
+
 const server = http.createServer( (req, res) => {
 
     service.getTweets()
       .then( data => {
 
+        if(req.url === '/' || '/index'){
+          fs.readFile("index.html", ( err, file )=> {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(file);
+            res.end();
+          })
+        }
+
         // all timelines
         if(req.url === '/api/tweets'){
-          res.write(JSON.stringify(data))
-          res.end()
-        }
+          res.write(JSON.stringify(data));
+          res.end();
+        };
 
-        // dynamically create routes depending on
+        // TODO: dynamically create routes depending on
         // how many timelines the user is requesting
         if(req.url === `/api/tweets/${timelines[0]}`){
-          const filtered = Object.values(data).filter( v => v['screen_name'] === timelines[0])
-          res.write(JSON.stringify(filtered))
-          res.end()
-        }
+          const filtered = Object.values(data).filter( v => v['screen_name'] === timelines[0]);
+          res.write(JSON.stringify(filtered));
+          res.end();
+        };
 
         if(req.url === `/api/tweets/${timelines[1]}`){
-          const filtered = Object.values(data).filter( v => v['screen_name'] === timelines[1])
-          res.write(JSON.stringify(filtered))
+          const filtered = Object.values(data).filter( v => v['screen_name'] === timelines[1]);
+          res.write(JSON.stringify(filtered));
           res.end()
-        }
+        };
 
         if(req.url === `/api/tweets/${timelines[2]}`){
-          const filtered = Object.values(data).filter( v => v['screen_name'] === timelines[2])
-          res.write(JSON.stringify(filtered))
-          res.end()
-        }
-
-
-
-
+          const filtered = Object.values(data).filter( v => v['screen_name'] === timelines[2]);
+          res.write(JSON.stringify(filtered));
+          res.end();
+        };
 
       })
       .catch( err => {
@@ -69,8 +75,3 @@ const server = http.createServer( (req, res) => {
 server.listen(3000, () => {
   console.log('Listening on port 3000');
 });
-
-
-
-
-//TODO: display in browser
