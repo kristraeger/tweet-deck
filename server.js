@@ -27,16 +27,11 @@ const fs = require('fs')
 
 const server = http.createServer( (req, res) => {
 
+
+  if(req.url.includes('api')){
+
     service.getTweets()
       .then( data => {
-
-        if(req.url === '/' || '/index'){
-          fs.readFile("index.html", ( err, file )=> {
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write(file);
-            res.end();
-          })
-        }
 
         // all timelines
         if(req.url === '/api/tweets'){
@@ -69,6 +64,30 @@ const server = http.createServer( (req, res) => {
         console.log(`could not get data from service: ${err}`)
       });
 
+    }; // end if(includes(api))
+
+    // TODO: requiring home page
+    // if(req.url === '/' || req.url === '/index.html'){
+    //   fs.readFile("index.html", ( err, file )=> {
+    //
+    //     if(err){
+    //       res.writeHead(404);
+    //       res.write("Not Found!");
+    //       res.end();
+    //     } else {
+    //       res.writeHead(200, {'Content-Type': 'text/html'});
+    //       res.write(file);
+    //       res.end();
+    //     }
+    //
+    //     // if(req.url.includes('js')){
+    //     //   res.writeHead(200, {'Content-Type': 'text/javascript'});
+    //     //
+    //     // }
+    //
+    //
+    //   })
+    // }
 
 }); // end createServer()
 
