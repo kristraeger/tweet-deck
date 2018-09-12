@@ -9,9 +9,9 @@ module.exports = {
 app_settings: {
     count: '30', //defaults to 200 if empty
     screen_names: [
-      'makeschool',
+      'kristinatraeger',
       'ycombinator',
-      'newsycombinator'
+      'michelleobama'
     ]
   },
 
