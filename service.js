@@ -7,11 +7,11 @@ module.exports = {
 */
 
 app_settings: {
-    count: '30',
+    count: '30', //defaults to 200 if empty
     screen_names: [
-      'makeschool',
-      'ycombinator',
-      'newsycombinator'
+      // 'makeschool',
+      // 'ycombinator',
+      // 'newsycombinator'
     ]
   },
 
@@ -37,16 +37,30 @@ fetch(url){
       .catch( err => { console.log(err) } )
 },
 async getTweets(){
-    // request all timelines parallel
-    const screen_name_arr= this.app_settings.screen_names.map(async screen_name => {
-      const response = await this.fetch(`${this.request_base_url}\?count\=${this.app_settings.count}\&screen_name\=${screen_name}`);
-      return { screen_name, response }
-    });
 
-    // wait for all requests to be settled
-    let all = await Promise.all(screen_name_arr);
+    try {
+      // request all timelines parallel
+      const screen_name_arr= this.app_settings.screen_names.map(async screen_name => {
+        const response = await this.fetch(`${this.request_base_url}\?count\=${this.app_settings.count}\&screen_name\=${screen_name}`);
+        return { screen_name, response }
+      });
 
-    return all
+      // wait for all requests to be settled
+      let all = await Promise.all(screen_name_arr);
+
+      if( all && all.length > 0 ){
+        return all
+      }
+
+      if ( all && all.length === 0 && this.app_settings.screen_names.length === 0) {
+        console.log("no twitter usernames defined")
+        let err = Error("no twitter usernames defined")
+        return err
+      }
+    } catch( error ){
+      throw Error(error)
+    }
+
 
   }, // end getTweets()
 
