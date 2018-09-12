@@ -17,6 +17,8 @@ const express = require('express');
 
 const app = express();
 
+const port = process.env.PORT || 3000;
+
 /*
   Create api for tweets.
 */
@@ -46,19 +48,16 @@ app.get('/api/tweets', (req, res) => {
   res.send(data)
 });
 
-// TODO: array routes.length === timelines.length
-app.get(`/api/tweets/${timelines[0]}`, (req, res) => {
-  const filtered = Object.values(data).filter( v => v['screen_name'] === timelines[0]);
-  res.send(filtered);
-});
+app.get('/api/tweets/:screen_name', (req, res) => {
+  const filtered = (() => {
+    if(req.params.screen_name && timelines.includes(req.params.screen_name.toLowerCase())){
+      return Object.values(data)
+            .filter( v => v['screen_name'] === req.params.screen_name.toLowerCase());
+    } else {
+      return `hmmh, can't find a timeline for ${req.params.screen_name}! typo?`
+    }
+  })();
 
-app.get(`/api/tweets/${timelines[1]}`, (req, res) => {
-  const filtered = Object.values(data).filter( v => v['screen_name'] === timelines[1]);
-  res.send(filtered);
-});
-
-app.get(`/api/tweets/${timelines[2]}`, (req, res) => {
-  const filtered = Object.values(data).filter( v => v['screen_name'] === timelines[2]);
   res.send(filtered);
 });
 
@@ -67,4 +66,4 @@ app.get('/', (req, res) => {
   res.send('My awesome TweetDeck')
 });
 
-app.listen(3000, () => console.log('Listening on port 3000...'));
+app.listen(3000, () => console.log(`Listening on ${port}`));
