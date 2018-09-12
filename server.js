@@ -1,29 +1,25 @@
 
+const spawn = require('child_process').spawn;
+const express = require('express');
+const app = express();
+const service = require('./service');
+
 /*
   Create child process and set up proxy server for Twitter.
 */
 
-const spawn = require('child_process').spawn;
-
-// this way, we don't need to authenticate :)
 // TwitterAPI available on http://localhost:7980
 spawn('twitter-proxy');
 
 /*
-  Create dev server.
+  Serve static files.
 */
 
-const express = require('express');
-
-const app = express();
-
-const port = process.env.PORT || 3000;
+app.use(express.static('public'))
 
 /*
   Create api for tweets.
 */
-
-const service = require('./service.js');
 
 const timelines = service.app_settings.screen_names;
 
@@ -53,17 +49,15 @@ app.get('/api/tweets/:screen_name', (req, res) => {
     if(req.params.screen_name && timelines.includes(req.params.screen_name.toLowerCase())){
       return Object.values(data)
             .filter( v => v['screen_name'] === req.params.screen_name.toLowerCase());
-    } else {
-      return `hmmh, can't find a timeline for ${req.params.screen_name}! typo?`
-    }
+    } else return false
   })();
-
+  if(!filtered) res.status(404).send('Timeline with given /:screen_name cannot be found')
   res.send(filtered);
 });
 
-app.get('/', (req, res) => {
-  //TODO: serve index html
-  res.send('My awesome TweetDeck')
-});
+/*
+  Set environment variables.
+*/
+const port = process.env.PORT || 3000;
 
-app.listen(3000, () => console.log(`Listening on ${port}`));
+app.listen(port, () => console.log(`Listening on ${port}`));
