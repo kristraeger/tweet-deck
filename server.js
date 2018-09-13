@@ -21,7 +21,6 @@ app.use(helmet({ dnsPrefetchControl: { allow: true }}));
 /*
   Serve static files.
 */
-
 app.use(express.static('public'))
 
 /*
@@ -65,6 +64,6 @@ app.get('/api/tweets/:screen_name', (req, res) => {
 /*
   Set environment variables.
 */
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
-app.listen(port, () => console.log(`Listening on ${port}`));
+app.listen(port, () => console.log(`Server listening on ${port}`));

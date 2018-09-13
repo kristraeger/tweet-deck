@@ -2,7 +2,7 @@
   "name": "tweetdeck",
   "version": "1.0.0",
   "description": "view timelines of your favorite twitter users",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
@@ -19,6 +19,7 @@
     "twitter-proxy": "^2.0.0"
   },
   "devDependencies": {
+    "browser-sync": "^2.24.7",
     "nodemon": "^1.18.4"
   }
 }
