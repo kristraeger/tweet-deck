@@ -15,8 +15,8 @@ const service = require('./service');
 /*
  Secure your Express app by setting various HTTP headers.
 */
-
-app.use(helmet());
+// enable DNS lookups for load performance
+app.use(helmet({ dnsPrefetchControl: { allow: true }}));
 
 /*
   Serve static files.
