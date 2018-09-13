@@ -1,15 +1,22 @@
 
-const spawn = require('child_process').spawn;
-const express = require('express');
-const app = express();
-const service = require('./service');
-
 /*
   Create child process and set up proxy server for Twitter.
 */
-
+const spawn = require('child_process').spawn;
 // TwitterAPI available on http://localhost:7980
+// NOTE:needs to come before express
 spawn('twitter-proxy');
+
+const express = require('express');
+const app = express();
+const helmet = require('helmet')
+const service = require('./service');
+
+/*
+ Secure your Express app by setting various HTTP headers.
+*/
+
+app.use(helmet());
 
 /*
   Serve static files.
